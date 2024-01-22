@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { MdOutlineLightMode, MdLightMode } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { addDarkTheme, addLightTheme } from "./utils/themeSlice";
+import Shimmer from "./components/Shimmer";
 
 const App = () => {
   const [topRepos, setTopRepos] = useState([]);
@@ -56,30 +57,38 @@ const App = () => {
 
   return (
     <div className="w-full dark:bg-gray-950">
-      <InfiniteScroll
-        dataLength={topRepos.length}
-        next={fetchMoreData}
-        hasMore={true}
-      >
-        <div className="text-center mx-auto max-w-screen-md dark:bg-gray-950 dark:text-white">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-bold mb-6">
-              Most Starred GitHub Repositories (Last 30 Days)
-            </h1>
-            <div
-              className="hover:cursor-pointer ml-1 sm:ml-3 mt-3 text-2xl "
-              onClick={themeClickHandler}
-            >
-              {themeMode === "light" ? <MdOutlineLightMode /> : <MdLightMode />}
+      {topRepos.length ? (
+        <InfiniteScroll
+          dataLength={topRepos.length}
+          next={fetchMoreData}
+          hasMore={true}
+        >
+          <div className="text-center mx-auto max-w-screen-md dark:bg-gray-950 dark:text-white">
+            <div className="flex justify-between">
+              <h1 className="text-2xl font-bold mb-6">
+                Most Starred GitHub Repositories (Last 30 Days)
+              </h1>
+              <div
+                className="hover:cursor-pointer ml-1 sm:ml-3 mt-3 text-2xl "
+                onClick={themeClickHandler}
+              >
+                {themeMode === "light" ? (
+                  <MdOutlineLightMode />
+                ) : (
+                  <MdLightMode />
+                )}
+              </div>
             </div>
+            <ul className="flex flex-col items-center">
+              {topRepos.map((repo) => (
+                <RepoCard key={repo.id} repo={repo} />
+              ))}
+            </ul>
           </div>
-          <ul className="flex flex-col items-center">
-            {topRepos.map((repo) => (
-              <RepoCard key={repo.id} repo={repo} />
-            ))}
-          </ul>
-        </div>
-      </InfiniteScroll>
+        </InfiniteScroll>
+      ) : (
+        <Shimmer />
+      )}
     </div>
   );
 };
