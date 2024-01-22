@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import RepoCard from "./components/RepoCard";
+import InfiniteScroll from "react-infinite-scroll-component";
 
+import "./App.css";
 const App = () => {
   const [topRepos, setTopRepos] = useState([]);
 
@@ -19,26 +21,37 @@ const App = () => {
         throw new Error("Response was not ok");
       }
       const data = await response.json();
-      setTopRepos(data.items);
+      setTopRepos((prev) => [...prev, ...data.items]);
     } catch (error) {
       console.error("Error ", error);
     }
   };
+
+  const fetchMoreData = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
   useEffect(() => {
     fetchData();
   }, [page]);
 
   return (
-    <div className="text-center mx-auto max-w-screen-md">
-      <h1 className="text-2xl font-bold mb-6">
-        Most Starred GitHub Repositories (Last 30 Days)
-      </h1>
-      <ul className="flex flex-col items-center">
-        {topRepos.map((repo) => (
-          <RepoCard key={repo.id} repo={repo} />
-        ))}
-      </ul>
-    </div>
+    <InfiniteScroll
+      dataLength={topRepos.length}
+      next={fetchMoreData}
+      hasMore={true}
+    >
+      <div className="text-center mx-auto max-w-screen-md">
+        <h1 className="text-2xl font-bold mb-6">
+          Most Starred GitHub Repositories (Last 30 Days)
+        </h1>
+        <ul className="flex flex-col items-center">
+          {topRepos.map((repo) => (
+            <RepoCard key={repo.id} repo={repo} />
+          ))}
+        </ul>
+      </div>
+    </InfiniteScroll>
   );
 };
 
