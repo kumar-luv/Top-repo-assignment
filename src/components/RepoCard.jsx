@@ -2,7 +2,6 @@ import React from "react";
 import { formatDistanceToNow } from "date-fns";
 
 const RepoCard = ({ repo }) => {
-  console.log("component rendered");
   return (
     <div className="flex w-full m-3 p-3 border border-gray-300 rounded-md shadow-md hover:shadow-2xl  dark:shadow-blue-500 ">
       <img
